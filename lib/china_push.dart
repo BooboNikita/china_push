@@ -27,4 +27,9 @@ class ChinaPush {
         .setNotificationClickListener(onClickNotification);
   }
 
+  static void setMessageReceivedListener(Function(dynamic) onMessageReceived) {
+    ChinaPushPlatform.instance
+        .setMessageReceivedListener(onMessageReceived);
+  }
+
 }

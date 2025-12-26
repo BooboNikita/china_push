@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.huarenkeji.china_push.callback.OnOpenNotification;
 import com.huarenkeji.china_push.callback.OnRegisterCallback;
+import com.huarenkeji.china_push.callback.OnMessageReceivedListener;
 import com.huarenkeji.china_push.util.Logger;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.StandardMessageCodec;
 
-public class ChinaPushHandler implements MethodChannel.MethodCallHandler, OnRegisterCallback, OnOpenNotification {
+public class ChinaPushHandler implements MethodChannel.MethodCallHandler, OnRegisterCallback, OnOpenNotification, OnMessageReceivedListener {
 
     private final Context context;
     private final MethodChannel channel;
@@ -35,6 +36,7 @@ public class ChinaPushHandler implements MethodChannel.MethodCallHandler, OnRegi
         methodChannel.setMethodCallHandler(pushHandler);
         PushManager.addRegisterListener(pushHandler);
         PushManager.addOpenNotificationListener(pushHandler);
+        PushManager.addMessageReceivedListener(pushHandler);
         return pushHandler;
     }
 
@@ -110,5 +112,10 @@ public class ChinaPushHandler implements MethodChannel.MethodCallHandler, OnRegi
     @Override
     public void onOpenNotification(Object data) {
         channel.invokeMethod("onNotificationClick", data);
+    }
+
+    @Override
+    public void onMessageReceived(Map<String, String> data) {
+        channel.invokeMethod("onMessageReceived", data);
     }
 }

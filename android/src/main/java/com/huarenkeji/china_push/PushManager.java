@@ -8,10 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import java.util.Map;
 import android.text.TextUtils;
 
 import com.huarenkeji.china_push.callback.OnOpenNotification;
 import com.huarenkeji.china_push.callback.OnRegisterCallback;
+import com.huarenkeji.china_push.callback.OnMessageReceivedListener;
 import com.huarenkeji.china_push.core.HmsPushInterface;
 import com.huarenkeji.china_push.core.HonorPushInterface;
 import com.huarenkeji.china_push.core.MiPushInterface;
@@ -35,6 +37,8 @@ public class PushManager {
 
     private final List<OnRegisterCallback> registerCallbackList;
     private final List<OnOpenNotification> openNotificationList;
+
+    private final List<OnMessageReceivedListener> messageReceivedList = new ArrayList<>();
 
     private PushManager() {
         registerCallbackList = new ArrayList<>();
@@ -162,6 +166,21 @@ public class PushManager {
 
     public static void removeNotificationListener(OnOpenNotification listener) {
         getInstance().openNotificationList.remove(listener);
+    }
+
+    public static void onMessageReceived(Map<String, String> data) {
+        Logger.i("PushManager onMessageReceived PushInterface:" + getInstance().pushInterface.getClass().getName() + " data :" + data);
+        for (int i = getInstance().messageReceivedList.size() - 1; i >= 0; i--) {
+            getInstance().messageReceivedList.get(i).onMessageReceived(data);
+        }
+    }
+
+    public static void addMessageReceivedListener(OnMessageReceivedListener listener) {
+        getInstance().messageReceivedList.add(listener);
+    }
+
+    public static void removeMessageReceivedListener(OnMessageReceivedListener listener) {
+        getInstance().messageReceivedList.remove(listener);
     }
 
 

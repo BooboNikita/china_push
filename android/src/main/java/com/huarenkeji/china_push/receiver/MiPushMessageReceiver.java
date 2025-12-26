@@ -4,7 +4,15 @@ import android.content.Context;
 
 import com.huarenkeji.china_push.PushManager;
 import com.huarenkeji.china_push.core.MiPushInterface;
+import android.os.Handler;
+import android.os.Looper;
+
 import com.huarenkeji.china_push.util.Logger;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
@@ -28,6 +36,20 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         Logger.i("onNotificationMessageArrived: title:" + message.getTitle() + " content : " + message.getDescription() +
                 " data:" + message.getContent());
+        if (message != null && message.getContent() != null) {
+            try {
+                JSONObject json = new JSONObject(message.getContent());
+                Map<String, String> map = new HashMap<>();
+                Iterator<String> keys = json.keys();
+                while(keys.hasNext()) {
+                    String key = keys.next();
+                    map.put(key, json.optString(key));
+                }
+                new Handler(Looper.getMainLooper()).post(() -> PushManager.onMessageReceived(map));
+            } catch (Exception e) {
+                Logger.e("Mi onNotificationMessageArrived parse error: " + e.getMessage());
+            }
+        }
     }
 
 

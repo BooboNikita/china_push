@@ -18,6 +18,8 @@ class MethodChannelChinaPush extends ChinaPushPlatform {
 
   Function(dynamic)? onNotificationClick;
 
+  Function(dynamic)? onMessageReceived;
+
   @override
   Future<String?> getPlatformVersion() async {
     final version =
@@ -52,6 +54,9 @@ class MethodChannelChinaPush extends ChinaPushPlatform {
       case 'onNotificationClick':
         notifyClickListener(methodCall.arguments);
         break;
+      case 'onMessageReceived':
+        notifyMessageReceived(methodCall.arguments);
+        break;
       default:
         break;
     }
@@ -66,9 +71,23 @@ class MethodChannelChinaPush extends ChinaPushPlatform {
     onNotificationClick?.call(data);
   }
 
+  void notifyMessageReceived(dynamic data) {
+    print("onMessageReceived:args : $data");
+    if (data != null && data is String && data.isNotEmpty) {
+      data = jsonDecode(data);
+    }
+
+    onMessageReceived?.call(data);
+  }
+
   @override
   void setNotificationClickListener(Function(dynamic) onNotificationClick) {
     this.onNotificationClick = onNotificationClick;
+  }
+
+  @override
+  void setMessageReceivedListener(Function(dynamic) onMessageReceived) {
+    this.onMessageReceived = onMessageReceived;
   }
 
   @override

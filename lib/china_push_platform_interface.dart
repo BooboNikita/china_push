@@ -40,6 +40,11 @@ abstract class ChinaPushPlatform extends PlatformInterface {
         'addNotificationClickListener() has not been implemented.');
   }
 
+  void setMessageReceivedListener(Function(dynamic) onMessageReceived) {
+    throw UnimplementedError(
+        'setMessageReceivedListener() has not been implemented.');
+  }
+
   Future<String?> getManufacturer() {
     throw UnimplementedError(
         'addNotificationClickListener() has not been implemented.');
